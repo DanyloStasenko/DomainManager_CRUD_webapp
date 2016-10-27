@@ -51,6 +51,7 @@ public class DomainServiceImpl implements DomainService
     }
 
     @Override
+    @Transactional
     public void checkAndUpdateDomain(int id)
     {
         try

@@ -72,7 +72,6 @@ public class DomainController
         return "domaindata";
     }
 
-    // added this
     @RequestMapping("/check/{id}")
     public String checkStatus(@PathVariable("id") int id)
     {
@@ -87,8 +86,6 @@ public class DomainController
             e.printStackTrace();
         }
 
-        //System.out.println("domain status checked");
-        //this.domainService.checkAndUpdateDomain(id);
         return "redirect:/domains";
     }
 }

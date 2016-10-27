@@ -1,6 +1,8 @@
 package com.springapp.mvc.model;
 
 import javax.persistence.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -53,16 +55,48 @@ public class Domain
     // checking URL, using GoogleSafeBrowsing API
     public void checkStatus() throws Exception
     {
-        // 'httpQueryTemplate' consists from parameters: client, appver, key, pver, and URL
-        String httpQueryTemplate = "https://sb-ssl.google.com/safebrowsing/api/lookup?client=DS&key=AIzaSyBe5JVoM-jSx3bFGLTpF1Uy5mhjhNHhmq4&appver=1.5.2&pver=3.1&url=";
-        String httpQuery = httpQueryTemplate+this.getDomainTitle();
-        URL url = new URL(httpQuery);
+        // 'templateUrl' consists from parameters: client, appver, key, pver, and URL
+        String templateUrl = "https://sb-ssl.google.com/safebrowsing/api/lookup?client=DS&key=AIzaSyBe5JVoM-jSx3bFGLTpF1Uy5mhjhNHhmq4&appver=1.5.2&pver=3.1&url=";
+        String readyUrl = templateUrl+this.getDomainTitle();
+        URL url = new URL(readyUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
         int responseCode = connection.getResponseCode();
-        if (responseCode == 200) this.setDomainStatus("Danger!");
-        if (responseCode == 400) this.setDomainStatus("Bad Request");
-        if (responseCode == 503) this.setDomainStatus("Service Unavailable");
-        else this.setDomainStatus("Safe");
+        switch (responseCode)
+        {
+            case 200: setDomainStatus("Danger!");
+                      break;
+            case 204: checkUrl(); // 204 responseCode is genereted by GoogleApi in 2 cases: 'OK', and 'NotFound', so I added one more function to check real UrlStatus
+                      break;
+            case 400: setDomainStatus("Not Found");
+                      break;
+            case 503: setDomainStatus("Service Unavailable");
+                      break;
+        }
+    }
+
+    public void checkUrl() throws Exception
+    {
+        String tempUrl = getDomainTitle();
+
+        if (!tempUrl.contains("http"))
+        {
+            tempUrl = "http://"+tempUrl;
+            System.out.println(tempUrl);
+        }
+
+        String responseMessage = "Not Found";
+        try
+        {
+            URL url = new URL(tempUrl);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            responseMessage = connection.getResponseMessage();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        this.setDomainStatus(responseMessage);
     }
 
     @Override
