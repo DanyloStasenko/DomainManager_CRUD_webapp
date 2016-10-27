@@ -1,7 +1,6 @@
 package com.springapp.mvc.service;
 
 import com.springapp.mvc.model.Domain;
-
 import java.util.List;
 
 public interface DomainService

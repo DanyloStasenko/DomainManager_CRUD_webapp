@@ -6,6 +6,12 @@
 
 <html>
     <head>
+        <Text>Auto checking URL with "http://" before the title, if not specified</Text>
+        <br/>
+        <Text>To check the same "https://", specify it in title</Text>
+        <br/>
+        <br/>
+
         <title>Domains Page</title>
 
         <style type="text/css">
@@ -42,50 +48,42 @@
                 background-color: #f0f0f0;
             }
 
-            /*.tg .tg-4eph {
-                background-color: #f9f9f9
-            }*/
         </style>
     </head>
 
     <body>
-    <a href="../../index.jsp">Back to main menu</a>
-    <br/>
-    <br/>
+        <a href="../../index.jsp">Back to main menu</a>
+        <br/>
+        <br/>
+        <h1>Domains List</h1>
 
-    <h1>Domains List</h1>
-
-    <c:if test="${!empty listDomains}">
-        <table class="tg">
-            <tr>
-                <th width="80">ID</th>
-                <th width="120">Title</th>
-                <th width="120">Status</th>
-                <th width="60">Edit</th>
-                <th width="60">Delete</th>
-                <th width="60">Check</th>
-            </tr>
-            <c:forEach items="${listDomains}" var="domain">
+        <c:if test="${!empty listDomains}">
+            <table class="tg">
                 <tr>
-                    <td>${domain.id}</td>
-                    <td><a href="/domaindata/${domain.id}" target="_blank">${domain.domainTitle}</a></td>
-                    <td>${domain.domainStatus}</td>
-                    <td><a href="<c:url value='/edit/${domain.id}'/>">Edit</a></td>
-                    <td><a href="<c:url value='/remove/${domain.id}'/>">Delete</a></td>
-                    <td><a href="<c:url value='/check/${domain.id}'/>">Check</a></td>
+                    <th width="80">ID</th>
+                    <th width="120">Title</th>
+                    <th width="120">Status</th>
+                    <th width="60">Edit</th>
+                    <th width="60">Delete</th>
+                    <th width="60">Check</th>
                 </tr>
-            </c:forEach>
-        </table>
-    </c:if>
+                <c:forEach items="${listDomains}" var="domain">
+                    <tr>
+                        <td>${domain.id}</td>
+                        <td><a href="/domaindata/${domain.id}" target="_blank">${domain.domainTitle}</a></td>
+                        <td>${domain.domainStatus}</td>
+                        <td><a href="<c:url value='/edit/${domain.id}'/>">Edit</a></td>
+                        <td><a href="<c:url value='/remove/${domain.id}'/>">Delete</a></td>
+                        <td><a href="<c:url value='/check/${domain.id}'/>">Check</a></td>
+                    </tr>
+                </c:forEach>
+            </table>
+        </c:if>
 
-
-    <h1>Add a Domain</h1>
-
-    <c:url var="addAction" value="/domains/add"/>
-
+        <h1>Add a Domain</h1>
+        <c:url var="addAction" value="/domains/add"/>
         <form:form action="${addAction}" commandName="domain">
             <table>
-                <%--Table titles--%>
                 <c:if test="${!empty domain.domainTitle}">
                     <tr>
                         <td>
@@ -100,7 +98,6 @@
                     </tr>
                 </c:if>
 
-                <%--Buttons--%>
                 <tr>
                     <td>
                         <form:label path="domainTitle">
@@ -111,6 +108,7 @@
                         <form:input path="domainTitle"/>
                     </td>
                 </tr>
+
                 <tr>
                     <td>
                         <form:label path="domainStatus">
@@ -124,14 +122,17 @@
 
                 <tr>
                     <td colspan="2">
+
                         <c:if test="${!empty domain.domainTitle}">
                             <input type="submit"
                                    value="<spring:message text="Edit Domain"/>"/>
                         </c:if>
+
                         <c:if test="${empty domain.domainTitle}">
                             <input type="submit"
                                    value="<spring:message text="Add Domain"/>"/>
                         </c:if>
+
                     </td>
                 </tr>
             </table>

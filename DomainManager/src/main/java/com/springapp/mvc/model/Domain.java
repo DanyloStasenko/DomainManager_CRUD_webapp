@@ -1,8 +1,6 @@
 package com.springapp.mvc.model;
 
 import javax.persistence.*;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -52,13 +50,22 @@ public class Domain
         this.domainStatus = domainStatus;
     }
 
-    // checking URL, using GoogleSafeBrowsing API
+    // checking URL with SafeBrowsing API
     public void checkStatus() throws Exception
     {
-        // 'templateUrl' consists from parameters: client, appver, key, pver, and URL
-        String templateUrl = "https://sb-ssl.google.com/safebrowsing/api/lookup?client=DS&key=AIzaSyBe5JVoM-jSx3bFGLTpF1Uy5mhjhNHhmq4&appver=1.5.2&pver=3.1&url=";
-        String readyUrl = templateUrl+this.getDomainTitle();
-        URL url = new URL(readyUrl);
+        String CLIENT = "DS";
+        String KEY = "AIzaSyBe5JVoM-jSx3bFGLTpF1Uy5mhjhNHhmq4";
+        String APPVER = "1.5.2";
+        String PVER = "3.1";
+        String URL = getDomainTitle();
+
+        String httpQuery = "https://sb-ssl.google.com/safebrowsing/api/lookup?" + "client="+CLIENT
+                                                                                  + "&key="+KEY
+                                                                                  + "&appver="+APPVER
+                                                                                  + "&pver="+PVER
+                                                                                  + "&url="+URL;
+
+        URL url = new URL(httpQuery);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         int responseCode = connection.getResponseCode();
@@ -66,7 +73,7 @@ public class Domain
         {
             case 200: setDomainStatus("Danger!");
                       break;
-            case 204: checkUrl(); // 204 responseCode is genereted by GoogleApi in 2 cases: 'OK', and 'NotFound', so I added one more function to check real UrlStatus
+            case 204: checkUrl(); // 204 is generated when 'OK', and 'NotFound'. Let's get real UrlStatus
                       break;
             case 400: setDomainStatus("Not Found");
                       break;
@@ -75,17 +82,17 @@ public class Domain
         }
     }
 
+    // one more check, if 204
     public void checkUrl() throws Exception
     {
-        String tempUrl = getDomainTitle();
-
-        if (!tempUrl.contains("http"))
-        {
-            tempUrl = "http://"+tempUrl;
-            System.out.println(tempUrl);
-        }
-
+        String tempUrl = this.getDomainTitle();
         String responseMessage = "Not Found";
+
+        // auto add "http://", if not specified
+        if(!tempUrl.startsWith("http", 0))
+        {
+            tempUrl = "http://" + tempUrl;
+        }
         try
         {
             URL url = new URL(tempUrl);
@@ -96,6 +103,7 @@ public class Domain
         {
             e.printStackTrace();
         }
+
         this.setDomainStatus(responseMessage);
     }
 

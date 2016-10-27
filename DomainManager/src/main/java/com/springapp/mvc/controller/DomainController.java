@@ -35,6 +35,10 @@ public class DomainController
     @RequestMapping(value = "/domains/add", method = RequestMethod.POST)
     public String addDomain(@ModelAttribute("domain") Domain domain)
     {
+        if(domain.getDomainTitle().isEmpty())
+        {
+            domain.setDomainTitle("default");
+        }
         if(domain.getId() == 0)
         {
             this.domainService.addDomain(domain);
