@@ -59,13 +59,13 @@ public class DomainController
         return "redirect:/domains";
     }
 
-    @RequestMapping("edit/{id}")
+    @RequestMapping("editdomain/{id}")
     public String editDomain(@PathVariable("id") int id, Model model)
     {
         model.addAttribute("domain", this.domainService.getDomainById(id));
         model.addAttribute("listDomains", this.domainService.listDomains());
 
-        return "domains";
+        return "editdomain";
     }
 
     @RequestMapping("domaindata/{id}")

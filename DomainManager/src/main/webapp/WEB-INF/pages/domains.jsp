@@ -72,7 +72,7 @@
                         <td>${domain.id}</td>
                         <td><a href="/domaindata/${domain.id}" target="_blank">${domain.domainTitle}</a></td>
                         <td>${domain.domainStatus}</td>
-                        <td><a href="<c:url value='/edit/${domain.id}'/>">Edit</a></td>
+                        <td><a href="/editdomain/${domain.id}" target="_blank">Edit</a></td>
                         <td><a href="<c:url value='/remove/${domain.id}'/>">Delete</a></td>
                         <td><a href="<c:url value='/check/${domain.id}'/>">Check</a></td>
                     </tr>
